@@ -9,12 +9,18 @@ output: github_document
 
 General theme that you wish you address -> how does spending affect (individual) homelessness
 1. which programs are better, 
-2. race gender sexuality stuff
+2. race gender sexuality stuff, spending, disabled, veteran, how long someone has been,  etc to check if someone will stay homeless
 3. 
 
 Specific questions you may address along with your expectation of what you may find ->
 
-Relevant work (at least 3) ->
+Relevant work (at least 3) -> https://slack-redir.net/link?url=http%3A%2F%2Fjournals.sagepub.com%2Fdoi%2Fabs%2F10.2307%2F1389580
+http://journals.sagepub.com/doi/abs/10.1177/004208169102700109
+http://nlihc.org/sites/default/files/Patchwork-2001.pdf
+http://nlihc.org/library/preservation
+
+
+
 
 Our client/stakeholders and their contact information-  Antoinette Pietka, Bimal Rajbahandary, Anna Plumb, other possible contacts https://www.portlandoregon.gov/inr_view.cfm?id=241 , http://nlihc.org/involvement/local/state/OR 
 
@@ -28,7 +34,7 @@ https://public.tableau.com/profile/oregon.housing.and.community.services#!/vizho
 
 check percentage of people who arrived recently
 anyway to check for people in both samples
-we want to control for price of housing and minimum wage
+we want to control for price of housing prices and minimum wage
 
 
 
@@ -41,7 +47,7 @@ Describe the data
 
 Vision for deliverable
 - Visualizations ->
-- Models ->
+- Models -> build a model to see if someone will remain homeless
 - Data ->
 - Format -> Prefer Shiny, last resourt White paper.
   - White paper (Rmd document)
