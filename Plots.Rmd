@@ -7,6 +7,7 @@ output: html_document
 
 ```{r}
 library(tidyverse)
+library(readxl)
 
 ```
 
@@ -16,4 +17,7 @@ library(tidyverse)
 
 Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")
 
+Evictions <- read_xlsx('eviction_lab_export.xlsx')
+
+Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
 ```
