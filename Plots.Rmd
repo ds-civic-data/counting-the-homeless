@@ -1,0 +1,19 @@
+---
+title: "Plots"
+author: "aaron till"
+date: "4/19/2018"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+```
+
+
+
+```{r}
+
+Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")
+
+```
