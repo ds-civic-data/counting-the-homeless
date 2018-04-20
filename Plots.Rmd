@@ -20,4 +20,9 @@ Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")
 Evictions <- read_xlsx('eviction_lab_export.xlsx')
 
 Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
+
+PIT_CoC <- read_xlsx("Project Proposal/2007-2017-PIT-Counts-by-CoC.XLSX.xlsx")
+
+PIT_State <- read_xlsx("Project Proposal/2007-2017-PIT-Counts-by-State.xlsx")
+
 ```
