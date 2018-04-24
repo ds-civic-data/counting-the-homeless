@@ -22,6 +22,8 @@ Evictions <- read_xlsx('eviction_lab_export.xlsx')
 Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
 
 PIT_CoC <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx")
+PIT_CoC <- PIT_CoC %>%
+  rename('CoC_Name' = 'CoC Name')
 
 
 PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
@@ -35,7 +37,13 @@ PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
 Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
   mutate(countyname2 = str_remove(countyname, pattern = ' County'))
 
-#Affordable_Counties <- full_join(Affordable_Housing_10_14, PIT_CoC, by = c('countyname' = 'CoC Name'))
+
+
+PIT_CoC <- PIT_CoC %>%
+  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))
+
+
+Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
 
 
 
