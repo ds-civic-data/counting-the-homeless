@@ -33,7 +33,7 @@ PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
 
 Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
   mutate(countyname2 = str_remove(countyname, pattern = ' County'))
-
+f
 #Affordable_Counties <- full_join(Affordable_Housing_10_14, PIT_CoC, by = c('countyname' = 'CoC Name'))
 
 ```
