@@ -23,7 +23,8 @@ Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
 
 PIT_CoC <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx")
 PIT_CoC <- PIT_CoC %>%
-  rename('CoC_Name' = 'CoC Name')
+  rename('CoC_Name' = 'CoC Name') %>%
+  rename('Unsheltered' =  'Unsheltered Homeless, 2017' )
 
 
 PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
@@ -40,11 +41,21 @@ Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
 
 
 PIT_CoC <- PIT_CoC %>%
-  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))
+  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC')) 
 
 
 Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
 
 
 
+```
+
+```{r}
+
+ggplot(Affordable_Counties, aes(x = units, y = Unsheltered)) +
+  geom_jitter()
+
+
+
+```
 ```
