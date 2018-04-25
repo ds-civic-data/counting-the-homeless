@@ -53,7 +53,7 @@ Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
 ```{r}
 
 ggplot(Affordable_Counties, aes(x = units, y = Unsheltered)) +
-  geom_jitter()
+  geom_jitter() 
 
 
 
