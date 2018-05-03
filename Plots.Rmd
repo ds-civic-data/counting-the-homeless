@@ -192,6 +192,8 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
   dplyr::rename('Change_2015' = 'Change in Total Homelessness, 2015-2017') %>%
   dplyr::rename('Change_2016' = 'Change in Total Homelessness, 2016-2017') 
 
+
+
 ```
 
 ```{r}

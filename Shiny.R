@@ -5,20 +5,25 @@ library(tidyverse)
 library(fivethirtyeight)
 
 ##load data in plots.rmd
-select_color_options <- c("Area")
+select_year_total <- c("Total_Homeless_2017","Total_Homeless_2016","Total_Homeless_2015","Total_Homeless_2014","Total_Homeless_2013","Total_Homeless_2012","Total_Homeless_2011","Total_Homeless_2010","Total_Homeless_2009","Total_Homeless_2008","Total_Homeless_2007")
+select_year_change <- c('as.numeric(Change_2016)', 'as.numeric(Change_2015)', 'as.numeric(Change_2014)', 'as.numeric(Change_2013)', 'as.numeric(Change_2012)', 'as.numeric(Change_2011)', 'as.numeric(Change_2010)', 'as.numeric(Change_2009)', 'as.numeric(Change_2008)', 'as.numeric(Change_2007)')
+select_states <- c('Missouri', 'Oregon', 'California', 'Washington')
+
+
 
 # Define UI for application that plots 
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Part 1: Connecting UI and Server"),
+  titlePanel("Shiny"),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      selectInput('color_opts', 'Select Category to Color With', 
-                  choices = select_color_options),         
-      selectInput('color_opts2', 'Select Category to Color With', choices = select_color_options) ## Add User Interface element here ## Add User Interface element here
+      selectInput('year_total', 'Select Year for Oregon Counties', 
+                  choices = select_year_total),         
+      selectInput('year_change', 'Select Year for US States', choices = select_year_change),
+      selectInput('states', 'Select State(s)', choices = select_states, multiple = TRUE)
       
     ),
     
@@ -34,16 +39,20 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output$oregon_counties <- renderPlot({
-    PIT_Housing_Oregon_Merge %>% ggplot(aes_string(y= 'per100', x="Unsheltered", label = 'Area', 
-                                                   color=input$color_opts)) + 
-      geom_point()
+    PIT_Housing_Oregon_Merge %>% ggplot(aes_string(x='per100', y=input$year_total, color = 'Area')) + 
+      geom_point() +
+      xlab('Number of Affordable Housing Units per 100 E.L.I. Individuals')
+      
     
   })
   
-  output$usa_statee <- renderPlot({
-    PIT_Housing_State_Merge %>% ggplot(aes_string(x='per100', y="Change_2017", 
-                                  fill=State_Name)) + #input$color_opts2
-      geom_point() 
+  output$usa_states <- renderPlot({
+    PIT_Housing_State_Merge %>% filter(State_Name == input$states) %>% ggplot(aes_string(x='per100', y=input$year_change, 
+                                  color='State_Name')) + 
+      geom_point() +
+      xlab('Number of Affordable Housing Units per 100 E.L.I. Individuals') +
+      ylab('Change in Homelessness')
+      
   })
 }
 
