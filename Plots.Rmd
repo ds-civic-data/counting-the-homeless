@@ -9,6 +9,7 @@ output: html_document
 library(tidyverse)
 library(readxl)
 library(stringr)
+library(plyr)
 ```
 
 
@@ -27,12 +28,6 @@ Evictions <- read_xlsx('eviction_lab_export.xlsx')
 
 Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
 
-PIT_CoC <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx")
-PIT_CoC <- PIT_CoC %>%
-  rename('CoC_Name' = 'CoC Name') %>%
-  rename('Unsheltered' =  'Unsheltered Homeless, 2017' )%>%
-  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
-
 
 
 PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
@@ -41,6 +36,60 @@ Helper_State_Abrvs <- read.csv("states.csv.csv")
 
 ```
 
+
+#PIT COC - Expanding years
+
+```{r}
+
+
+
+PIT_CoC_2017 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 1)
+PIT_CoC_2016 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 2)
+PIT_CoC_2015 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 3)
+PIT_CoC_2014 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 4)
+PIT_CoC_2013 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 5)
+PIT_CoC_2012 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 6)
+PIT_CoC_2011 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 7)
+PIT_CoC_2010 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 8)
+PIT_CoC_2009 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 9)
+PIT_CoC_2008 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 10)
+PIT_CoC_2007 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 11)
+
+PIT_CoC <- join_all(list(PIT_CoC_2007, PIT_CoC_2008, PIT_CoC_2009, PIT_CoC_2010, PIT_CoC_2011, PIT_CoC_2012, PIT_CoC_2013, PIT_CoC_2014, PIT_CoC_2015, PIT_CoC_2016, PIT_CoC_2017))
+
+PIT_CoC <- PIT_CoC %>%
+  dplyr::rename('CoC_Name' = 'CoC Name') %>% #dplyr:: neccesary because plyr analog
+  dplyr::rename('Unsheltered_2017' =  'Unsheltered Homeless, 2017' )%>%
+  dplyr::rename('Total_Homeless_2017' = 'Homeless Individuals, 2017') %>%
+  dplyr::rename('Unsheltered_2016' =  'Unsheltered Homeless, 2016' )%>%
+  dplyr::rename('Total_Homeless_2016' = 'Homeless Individuals, 2016') %>%
+  dplyr::rename('Unsheltered_2015' =  'Unsheltered Homeless, 2015' )%>%
+  dplyr::rename('Total_Homeless_2015' = 'Homeless Individuals, 2015') %>%
+  dplyr::rename('Unsheltered_2014' =  'Unsheltered Homeless, 2014' )%>%
+  dplyr::rename('Total_Homeless_2014' = 'Homeless Individuals, 2014') %>%
+  dplyr::rename('Unsheltered_2013' =  'Unsheltered Homeless, 2013' )%>%
+  dplyr::rename('Total_Homeless_2013' = 'Homeless Individuals, 2013') %>%
+  dplyr::rename('Unsheltered_2012' =  'Unsheltered Homeless, 2012' )%>%
+  dplyr::rename('Total_Homeless_2012' = 'Homeless Individuals, 2012') %>%
+  dplyr::rename('Unsheltered_2011' =  'Unsheltered Homeless, 2011' )%>%
+  dplyr::rename('Total_Homeless_2011' = 'Homeless Individuals, 2011') %>%
+  dplyr::rename('Unsheltered_2010' =  'Unsheltered Homeless, 2010' )%>%
+  dplyr::rename('Total_Homeless_2010' = 'Homeless Individuals, 2010') %>%
+  dplyr::rename('Unsheltered_2009' =  'Unsheltered Homeless, 2009' )%>%
+  dplyr::rename('Total_Homeless_2009' = 'Homeless Individuals, 2009') %>%
+  dplyr::rename('Unsheltered_2008' =  'Unsheltered Homeless, 2008' )%>%
+  dplyr::rename('Total_Homeless_2008' = 'Homeless Individuals, 2008') %>%
+  dplyr::rename('Unsheltered_2007' =  'Unsheltered Homeless, 2007' )%>%
+  dplyr::rename('Total_Homeless_2007' = 'Homeless Individuals, 2007') %>%
+  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
+
+
+
+
+
+
+
+```
 
 # County Tidying - Oregon Only
 ```{r}
