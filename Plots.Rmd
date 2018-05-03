@@ -19,6 +19,10 @@ Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")  %>%
   mutate(countyname2 = str_remove(countyname, pattern = ' County')) 
 
 
+Affordable_Housing_05_09 <- read.csv("HAI_map_2005-09.csv")  %>%
+  mutate(countyname2 = str_remove(countyname, pattern = ' County')) 
+
+
 Evictions <- read_xlsx('eviction_lab_export.xlsx')
 
 Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
