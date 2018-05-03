@@ -12,7 +12,7 @@ library(stringr)
 ```
 
 
-
+# Data Import
 ```{r}
 
 Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")
@@ -29,10 +29,12 @@ PIT_CoC <- PIT_CoC %>%
 
 PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
 
+Helper_State_Abrvs <- read.csv("states.csv.csv")
+
 ```
 
 
-
+# County Tidying - Fail
 ```{r}
 
 Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
@@ -41,21 +43,45 @@ Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
 
 
 PIT_CoC <- PIT_CoC %>%
-  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC')) 
+  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
 
 
-Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
+#Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
 
 
+
+```
+
+
+# State Tidying
+```{r}
+ 
+Affordable_Housing_10_14_State <- Affordable_Housing_10_14 %>%
+  group_by(State_Name) %>%
+  summarise(units = mean(units, na.rm = TRUE), per100 = mean(per100, na.rm = TRUE))
+
+Intermediate_Housing_State_Abrvs <-full_join(Affordable_Housing_10_14_State, Helper_State_Abrvs, by = c('State_Name' = 'State'))
+
+PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_State, by = c('Abbreviation' = 'state')) %>%
+  rename('Change_2007' = 'Change in Total Homelessness, 2007-2017') %>%
+  rename('Change_2008' = 'Change in Total Homelessness, 2008-2017') %>%
+  rename('Change_2009' = 'Change in Total Homelessness, 2009-2017') %>%
+  rename('Change_2010' = 'Change in Total Homelessness, 2010-2017') %>%
+  rename('Change_2011' = 'Change in Total Homelessness, 2011-2017') %>%
+  rename('Change_2012' = 'Change in Total Homelessness, 2012-2017') %>%
+  rename('Change_2013' = 'Change in Total Homelessness, 2013-2017') %>%
+  rename('Change_2014' = 'Change in Total Homelessness, 2014-2017') %>%
+  rename('Change_2015' = 'Change in Total Homelessness, 2015-2017') %>%
+  rename('Change_2016' = 'Change in Total Homelessness, 2016-2017') 
 
 ```
 
 ```{r}
 
-ggplot(Affordable_Counties, aes(x = units, y = Unsheltered)) +
-  geom_jitter() 
 
 
+ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2014), x = per100)) +
+  geom_point() + 
+  geom_smooth(method = 'lm')
 
-```
 ```
