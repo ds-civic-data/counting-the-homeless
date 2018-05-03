@@ -91,7 +91,7 @@ PIT_CoC <- PIT_CoC %>%
 
 ```
 
-# County Tidying - Oregon Only
+# County Tidying of Affordable Housing - Oregon Only
 ```{r}
 
 Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14 %>%
@@ -131,9 +131,12 @@ Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$count
 
 Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14_Oregon %>%
   group_by(Area) %>%
-  summarise(units = mean(units), per100 = mean(per100))
+  dplyr::summarise(units = mean(units), per100 = mean(per100)) # also must specify dplyr
 
+```
 
+#County tidying of PIT - Oregon Only 
+```{r}
 
 PIT_CoC_Oregon<- PIT_CoC %>%
   filter(countyname2 == 'Eugene/Springfield/Lane County'| countyname2 == 'Portland-Gresham-Multnomah County'| countyname2 == 'Medford/Ashland/Jackson County'| countyname2 == 'Central Oregon'| countyname2 == 'Oregon Balance of State'| countyname2 == 'Hillsboro/Beaverton/Washington County'| countyname2 == 'Clackamas County') 
@@ -157,7 +160,7 @@ PIT_Housing_Oregon_Merge <- merge(Affordable_Housing_10_14_Oregon, PIT_CoC_Orego
 ```
 
 ```{r}
-ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered, y = per100, label = Area)) +
+ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100, label = Area)) +
   geom_point()+
   geom_text()
 
@@ -173,21 +176,21 @@ ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered, y = per100, label = Area))
  
 Affordable_Housing_10_14_State <- Affordable_Housing_10_14 %>%
   group_by(State_Name) %>%
-  summarise(units = mean(units, na.rm = TRUE), per100 = mean(per100, na.rm = TRUE))
+  dplyr::summarise(units = mean(units, na.rm = TRUE), per100 = mean(per100, na.rm = TRUE))
 
 Intermediate_Housing_State_Abrvs <-full_join(Affordable_Housing_10_14_State, Helper_State_Abrvs, by = c('State_Name' = 'State'))
 
 PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_State, by = c('Abbreviation' = 'state')) %>%
-  rename('Change_2007' = 'Change in Total Homelessness, 2007-2017') %>%
-  rename('Change_2008' = 'Change in Total Homelessness, 2008-2017') %>%
-  rename('Change_2009' = 'Change in Total Homelessness, 2009-2017') %>%
-  rename('Change_2010' = 'Change in Total Homelessness, 2010-2017') %>%
-  rename('Change_2011' = 'Change in Total Homelessness, 2011-2017') %>%
-  rename('Change_2012' = 'Change in Total Homelessness, 2012-2017') %>%
-  rename('Change_2013' = 'Change in Total Homelessness, 2013-2017') %>%
-  rename('Change_2014' = 'Change in Total Homelessness, 2014-2017') %>%
-  rename('Change_2015' = 'Change in Total Homelessness, 2015-2017') %>%
-  rename('Change_2016' = 'Change in Total Homelessness, 2016-2017') 
+  dplyr::rename('Change_2007' = 'Change in Total Homelessness, 2007-2017') %>%
+  dplyr::rename('Change_2008' = 'Change in Total Homelessness, 2008-2017') %>%
+  dplyr::rename('Change_2009' = 'Change in Total Homelessness, 2009-2017') %>%
+  dplyr::rename('Change_2010' = 'Change in Total Homelessness, 2010-2017') %>%
+  dplyr::rename('Change_2011' = 'Change in Total Homelessness, 2011-2017') %>%
+  dplyr::rename('Change_2012' = 'Change in Total Homelessness, 2012-2017') %>%
+  dplyr::rename('Change_2013' = 'Change in Total Homelessness, 2013-2017') %>%
+  dplyr::rename('Change_2014' = 'Change in Total Homelessness, 2014-2017') %>%
+  dplyr::rename('Change_2015' = 'Change in Total Homelessness, 2015-2017') %>%
+  dplyr::rename('Change_2016' = 'Change in Total Homelessness, 2016-2017') 
 
 ```
 
