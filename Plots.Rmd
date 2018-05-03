@@ -15,7 +15,9 @@ library(stringr)
 # Data Import
 ```{r}
 
-Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")
+Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")  %>%
+  mutate(countyname2 = str_remove(countyname, pattern = ' County')) 
+
 
 Evictions <- read_xlsx('eviction_lab_export.xlsx')
 
@@ -24,7 +26,9 @@ Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
 PIT_CoC <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx")
 PIT_CoC <- PIT_CoC %>%
   rename('CoC_Name' = 'CoC Name') %>%
-  rename('Unsheltered' =  'Unsheltered Homeless, 2017' )
+  rename('Unsheltered' =  'Unsheltered Homeless, 2017' )%>%
+  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
+
 
 
 PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
@@ -34,23 +38,81 @@ Helper_State_Abrvs <- read.csv("states.csv.csv")
 ```
 
 
-# County Tidying - Fail
+# County Tidying - Oregon Only
 ```{r}
 
-Affordable_Housing_10_14 <- Affordable_Housing_10_14 %>%
-  mutate(countyname2 = str_remove(countyname, pattern = ' County'))
+Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14 %>%
+  filter(State_Name == 'Oregon') %>%
+  filter(!is.na(Total))
+
+Affordable_Housing_10_14_Oregon$Area <- Affordable_Housing_10_14_Oregon$countyname2
+
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Hood River')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Jefferson')] <- 'Central_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Crook')] <- 'Central_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Tillamook')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Curry')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Wasco')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Columbia')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Malheur')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Union')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Clatsop')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Lincoln')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Umatilla')] <- 'Rural_Oreogn'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Coos')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Polk')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Yamhill')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Klamath')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Josephine')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Douglas')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Linn')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Deschutes')] <- 'Central_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Benton')] <- 'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Jackson')] <- 'Jackson'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Clackamas')] <- 'Clackamas'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Marion')] <-'Rural_Oregon'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Washington')] <- 'Washington'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Lane')] <- 'Lane'
+Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Multnomah')] <- 'Multnomah' 
+
+
+Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14_Oregon %>%
+  group_by(Area) %>%
+  summarise(units = mean(units), per100 = mean(per100))
 
 
 
-PIT_CoC <- PIT_CoC %>%
-  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
+PIT_CoC_Oregon<- PIT_CoC %>%
+  filter(countyname2 == 'Eugene/Springfield/Lane County'| countyname2 == 'Portland-Gresham-Multnomah County'| countyname2 == 'Medford/Ashland/Jackson County'| countyname2 == 'Central Oregon'| countyname2 == 'Oregon Balance of State'| countyname2 == 'Hillsboro/Beaverton/Washington County'| countyname2 == 'Clackamas County') 
 
 
-#Affordable_Counties <- merge(Affordable_Housing_10_14, PIT_CoC)
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Eugene/Springfield/Lane County')] <- 'Lane'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Portland-Gresham-Multnomah County')] <- 'Multnomah'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Medford/Ashland/Jackson County')] <- 'Jackson'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Central Oregon')] <- 'Central_Oregon'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Oregon Balance of State')] <- 'Rural_Oregon'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Hillsboro/Beaverton/Washington')] <- 'Washington'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Clackamas County')] <- 'Clackamas'
+
+
+
+
+PIT_Housing_Oregon_Merge <- merge(Affordable_Housing_10_14_Oregon, PIT_CoC_Oregon)
 
 
 
 ```
+
+```{r}
+ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered, y = per100, label = Area)) +
+  geom_point()+
+  geom_text()
+
+
+```
+
+
+
 
 
 # State Tidying
