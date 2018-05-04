@@ -209,6 +209,82 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
 
 ```
 
+
+#Census Data Pt.1 
+```{r eval=FALSE}
+OR_county_census_filtered <- read.csv("R11689837_SL050.csv")
+OR_county_census_filtered %>%
+  select(1:4, 56:107) %>%
+  dplyr::rename('Total Population' = 'SE_T001_001') %>%
+  dplyr::rename('Civilian Population 16 to 19 Years' = 'SE_T030_001') %>%
+  dplyr::rename('Not High School Graduate, Not Enrolled (Dropped Out)' = 'SE_T030_002') %>%
+  dplyr::rename('High School Graduate, or Enrolled (in School)' = 'SE_T030_003') %>%
+  dplyr::rename('Population 16 Years and Over' = 'SE_T033_001') %>% 
+  dplyr::rename('In Labor Force' = 'SE_T033_002') %>%
+  dplyr::rename('In Armed Forces' = ' SE_T033_003') %>%
+  dplyr::rename('Civilian' = 'SE_T033_004') %>%
+  dplyr::rename('Employed' = 'SE_T033_005') %>%
+  dplyr::rename('Unemployed' = 'SE_T033_006') %>%
+  dplyr::rename('Not in Labor Force' = 'SE_T033_007') %>%
+  ###Unemployment data(T37) left out since it is included in T33
+   dplyr::rename('Median Household Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T057_001') %>%
+   dplyr::rename('Per Capita Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T083_001') %>%
+   dplyr::rename('Gini Index' = 'SE_T157_00') %>%
+   dplyr::rename('Housing Units' = 'SE_T093_001') %>%
+   dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
+  ###unsure if rest of T99(housing fuel stuff) is useful 
+  dplyr::rename('Median Gross Rent' = 'SE_T099_001') %>%
+  dplyr::rename('Average Gross Rent for Renter-Occupied Housing Units' = 'SE_T099_001') %>%
+  ###avg and median are actually somewhat different
+  dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
+  dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
+  dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
+  dplyr::rename('Occupied Housing Units' = 'SE_T099_001') 
+```
+
+#Census Data we'll actually probably use
+```{r}
+perc_or_census <- read.csv("R11689837_SL050 (1).csv")
+perc_or_census_cleaned <- perc_or_census %>%
+  select(1:4, 56:143) %>%
+  dplyr::rename('Total Population' = 'SE_T001_001') %>%
+  dplyr::rename('Civilian Population 16 to 19 Years' = 'SE_T030_001') %>%
+  dplyr::rename('% Not High School Graduate, Not Enrolled (Dropped Out)' = 'PCT_SE_T030_002') %>%
+  dplyr::rename('% High School Graduate, or Enrolled (in School)' = 'PCT_SE_T030_003') %>%
+  dplyr::rename('Population 16 Years and Over' = 'SE_T033_001') %>% 
+  dplyr::rename('% In Labor Force' = 'PCT_SE_T033_002') %>%
+  dplyr::rename('% In Armed Forces' = 'PCT_SE_T033_003') %>%
+  dplyr::rename('% Civilian' = 'PCT_SE_T033_004') %>%
+  dplyr::rename('% Employed' = 'PCT_SE_T033_005') %>%
+  dplyr::rename('% Unemployed' = 'PCT_SE_T033_006') %>%
+  dplyr::rename('% Not in Labor Force' = 'PCT_SE_T033_007') %>%
+  ###Unemployment data(T37) left out since it is included in T33
+   dplyr::rename('Median Household Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T057_001') %>%
+   dplyr::rename('Per Capita Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T083_001') %>%
+   dplyr::rename('Gini Index' = 'SE_T157_001') %>%
+   dplyr::rename('Housing Units' = 'SE_T093_001') %>%
+   dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
+  ###unsure if rest of T99(housing fuel stuff) is useful 
+  dplyr::rename('Median Gross Rent' = 'SE_T104_001') %>%
+  dplyr::rename('Average Gross Rent for Renter-Occupied Housing Units' = 'SE_T106_001') %>%
+  ###avg and median are actually somewhat different
+  dplyr::rename('Population Under 18 Years of Age for Whom Poverty Status Is Determined' = 'SE_T114_001') %>%
+  dplyr::rename('% Living in Poverty <18 determined' = 'PCT_SE_T114_002') %>%
+  dplyr::rename('% At or Above Poverty Level <18 determined' = 'PCT_SE_T114_003') %>%
+  dplyr::rename('Population Age 18 to 64 for Whom Poverty Status Is Determined' = 'SE_T115_001') %>%
+  dplyr::rename('% Living in Poverty of 18-64 Determined' = 'PCT_SE_T115_002') %>%
+  dplyr::rename('% At or Above Poverty Level of 18-64 Determined' = 'PCT_SE_T115_003') %>%
+  dplyr::rename('Population Age 65 and Over for Whom Poverty Status Is Determined' = 'SE_T116_001') %>%
+  dplyr::rename('% Living in Poverty 65+ Determined' = 'PCT_SE_T116_002') %>%
+  dplyr::rename('% At or Above Poverty Level 65+ Determined' = 'PCT_SE_T116_003') 
+
+  
+  ###add more descriptions for each of the percentage ones
+### income poverty level variable hard to interpret
+  
+```
+
+
 ```{r}
 
 
