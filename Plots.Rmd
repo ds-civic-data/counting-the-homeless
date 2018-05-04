@@ -14,14 +14,17 @@ library(plyr)
 
 
 # Data Import
+
 ```{r}
 
 Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")  %>%
-  mutate(countyname2 = str_remove(countyname, pattern = ' County')) 
-
+  dplyr::rename('per100_2014' = 'per100') %>%
+  dplyr::rename('units_2014' = 'units')
 
 Affordable_Housing_05_09 <- read.csv("HAI_map_2005-09.csv")  %>%
-  mutate(countyname2 = str_remove(countyname, pattern = ' County')) 
+  dplyr::rename('per100_2009' = 'per100') %>%
+  dplyr::rename('units_2009' = 'units')
+
 
 
 Evictions <- read_xlsx('eviction_lab_export.xlsx')
@@ -34,6 +37,14 @@ PIT_State <- read_xlsx("2007-2017-PIT-Counts-by-State.xlsx")
 
 Helper_State_Abrvs <- read.csv("states.csv.csv")
 
+```
+
+# Joining the affordable housing
+
+```{r}
+Affordable_Housing <- full_join(Affordable_Housing_05_09, Affordable_Housing_10_14, by = c('countyname' = 'countyname', 'State_Name' = 'State_Name')) %>%
+  mutate(countyname2 = str_remove(countyname, pattern = ' County')) %>%
+  select(countyname, countyname2, State_Name, per100_2014, per100_2009, units_2009, units_2014)
 ```
 
 
@@ -92,50 +103,52 @@ PIT_CoC <- PIT_CoC %>%
 ```
 
 # County Tidying of Affordable Housing - Oregon Only
+
 ```{r}
 
-Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14 %>%
-  filter(State_Name == 'Oregon') %>%
-  filter(!is.na(Total))
+Affordable_Housing_Oregon <- Affordable_Housing %>%
+  filter(State_Name == 'Oregon') #%>%
+  #filter(!is.na(Total)) dont need this anymore becuase filtered in earlier step
 
-Affordable_Housing_10_14_Oregon$Area <- Affordable_Housing_10_14_Oregon$countyname2
+Affordable_Housing_Oregon$Area <- Affordable_Housing_Oregon$countyname2
 
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Hood River')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Jefferson')] <- 'Central_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Crook')] <- 'Central_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Tillamook')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Curry')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Wasco')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Columbia')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Malheur')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Union')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Clatsop')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Lincoln')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Umatilla')] <- 'Rural_Oreogn'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Coos')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Polk')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Yamhill')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Klamath')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Josephine')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Douglas')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Linn')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Deschutes')] <- 'Central_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Benton')] <- 'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Jackson')] <- 'Jackson'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Clackamas')] <- 'Clackamas'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Marion')] <-'Rural_Oregon'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Washington')] <- 'Washington'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Lane')] <- 'Lane'
-Affordable_Housing_10_14_Oregon$Area[which(Affordable_Housing_10_14_Oregon$countyname2 == 'Multnomah')] <- 'Multnomah' 
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Hood River')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Jefferson')] <- 'Central_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Crook')] <- 'Central_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Tillamook')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Curry')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Wasco')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Columbia')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Malheur')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Union')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Clatsop')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Lincoln')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Umatilla')] <- 'Rural_Oreogn'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Coos')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Polk')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Yamhill')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Klamath')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Josephine')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Douglas')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Linn')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Deschutes')] <- 'Central_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Benton')] <- 'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Jackson')] <- 'Jackson'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Clackamas')] <- 'Clackamas'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Marion')] <-'Rural_Oregon'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Washington')] <- 'Washington'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Lane')] <- 'Lane'
+Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'Multnomah')] <- 'Multnomah' 
 
 
-Affordable_Housing_10_14_Oregon <- Affordable_Housing_10_14_Oregon %>%
+Affordable_Housing_Oregon <- Affordable_Housing_Oregon %>%
   group_by(Area) %>%
-  dplyr::summarise(units = mean(units), per100 = mean(per100)) # also must specify dplyr
+  dplyr::summarise(units_2014 = mean(units_2014), per100_2014 = mean(per100_2014), units_2009 = mean(units_2009), per100_2009 = mean(per100_2009)) # also must specify dplyr
 
 ```
 
 #County tidying of PIT - Oregon Only 
+
 ```{r}
 
 PIT_CoC_Oregon<- PIT_CoC %>%
@@ -153,14 +166,14 @@ PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Clackamas County')] <- '
 
 
 
-PIT_Housing_Oregon_Merge <- merge(Affordable_Housing_10_14_Oregon, PIT_CoC_Oregon)
+PIT_Housing_Oregon_Merge <- merge(Affordable_Housing_Oregon, PIT_CoC_Oregon)
 
 
 
 ```
 
 ```{r}
-ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100, label = Area)) +
+ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100_2014, label = Area)) +
   geom_point()+
   geom_text()
 
@@ -174,11 +187,11 @@ ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100, label = A
 # State Tidying
 ```{r}
  
-Affordable_Housing_10_14_State <- Affordable_Housing_10_14 %>%
+Affordable_Housing_State <- Affordable_Housing %>%
   group_by(State_Name) %>%
-  dplyr::summarise(units = mean(units, na.rm = TRUE), per100 = mean(per100, na.rm = TRUE))
+  dplyr::summarise(units_2014 = mean(units_2014, na.rm = TRUE), per100_2014 = mean(per100_2014, na.rm = TRUE), units_2009 = mean(units_2009, na.rm = TRUE), per100_2009 = mean(per100_2009, na.rm = TRUE))
 
-Intermediate_Housing_State_Abrvs <-full_join(Affordable_Housing_10_14_State, Helper_State_Abrvs, by = c('State_Name' = 'State'))
+Intermediate_Housing_State_Abrvs <-full_join(Affordable_Housing_State, Helper_State_Abrvs, by = c('State_Name' = 'State'))
 
 PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_State, by = c('Abbreviation' = 'state')) %>%
   dplyr::rename('Change_2007' = 'Change in Total Homelessness, 2007-2017') %>%
@@ -200,7 +213,7 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
 
 
 
-ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2014), x = per100)) +
+ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2009), x = per100_2009)) +
   geom_point() + 
   geom_smooth(method = 'lm')
 
