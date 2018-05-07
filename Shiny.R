@@ -21,11 +21,11 @@ ui <- fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      selectInput('year_total', 'Select Year PIT for Oregon Counties', 
+      selectInput('year_total', 'Select Year for Oregon Counties', 
                   choices = select_year_total),         
-      selectInput('year_change', 'Select Year PIT for US States', choices = select_year_change),
+      selectInput('year_change', 'Select Year for US States', choices = select_year_change),
       selectInput('states', 'Select State(s)', choices = select_states, multiple = TRUE),
-      selectInput('proportion_beds','Select Year of Affordable Housing Count', choices = select_proportion_beds)
+      selectInput('proportion_beds','Select X Variable', choices = select_proportion_beds)
       
     ),
     

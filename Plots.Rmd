@@ -18,18 +18,18 @@ library(plyr)
 ```{r}
 
 Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")  %>%
-  dplyr::rename('per100_2014' = 'per100') %>%
-  dplyr::rename('units_2014' = 'units')
+  dplyr::rename('% Housing Units per ELI in 2014' = 'per100') %>%
+  dplyr::rename('Housing Units 2014' = 'units')
 
 Affordable_Housing_05_09 <- read.csv("HAI_map_2005-09.csv")  %>%
-  dplyr::rename('per100_2009' = 'per100') %>%
-  dplyr::rename('units_2009' = 'units')
+  dplyr::rename('% Housing Units per ELI in 2009' = 'per100') %>%
+  dplyr::rename('Housing Units 2009' = 'units')
 
 
 
-Evictions <- read_xlsx('eviction_lab_export.xlsx')
+#Evictions <- read_xlsx('eviction_lab_export.xlsx') not using because bad lvl of aggregation
 
-Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx')
+#Oregon_Housing_Prices <- read_xlsx('2017-OOR-OR.xlsx') not using because included in census
 
 
 
@@ -44,7 +44,7 @@ Helper_State_Abrvs <- read.csv("states.csv.csv")
 ```{r}
 Affordable_Housing <- full_join(Affordable_Housing_05_09, Affordable_Housing_10_14, by = c('countyname' = 'countyname', 'State_Name' = 'State_Name')) %>%
   mutate(countyname2 = str_remove(countyname, pattern = ' County')) %>%
-  select(countyname, countyname2, State_Name, per100_2014, per100_2009, units_2009, units_2014)
+  select(countyname, countyname2, State_Name, `% Housing Units per ELI in 2014`, `% Housing Units per ELI in 2009`, `Housing Units 2014`, `Housing Units 2009` )
 ```
 
 
@@ -143,7 +143,7 @@ Affordable_Housing_Oregon$Area[which(Affordable_Housing_Oregon$countyname2 == 'M
 
 Affordable_Housing_Oregon <- Affordable_Housing_Oregon %>%
   group_by(Area) %>%
-  dplyr::summarise(units_2014 = mean(units_2014), per100_2014 = mean(per100_2014), units_2009 = mean(units_2009), per100_2009 = mean(per100_2009)) # also must specify dplyr
+  dplyr::summarise(`Housing Units 2014` = sum(`Housing Units 2014`), `% Housing Units per ELI in 2014` = mean(`% Housing Units per ELI in 2014`), `Housing Units 2009` = sum(`Housing Units 2009`), `% Housing Units per ELI in 2009` = mean(`% Housing Units per ELI in 2009`)) # also must specify dplyr
 
 ```
 
@@ -208,6 +208,18 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
 
 
 ```
+
+```{r}
+
+
+
+ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2009), x = per100_2009)) +
+  geom_point() + 
+  geom_smooth(method = 'lm')
+
+```
+
+
 
 
 #Census Data Pt.1 
@@ -284,6 +296,55 @@ perc_or_census_cleaned <- perc_or_census %>%
   
 ```
 
+Oregon County Census Data - Grouping By Area
+
+```{r}
+
+perc_or_census_cleaned <- perc_or_census_cleaned %>%
+  mutate(countyname2 = str_remove(Geo_NAME, pattern = ' County, Oregon'))
+  
+
+perc_or_census_cleaned$Area <- perc_or_census_cleaned$countyname2
+
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Hood River')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Jefferson')] <- 'Central_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Crook')] <- 'Central_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Tillamook')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Curry')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Wasco')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Columbia')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Malheur')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Union')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Clatsop')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Lincoln')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Umatilla')] <- 'Rural_Oreogn'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Coos')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Polk')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Yamhill')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Klamath')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Josephine')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Douglas')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Linn')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Deschutes')] <- 'Central_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Benton')] <- 'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Jackson')] <- 'Jackson'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Clackamas')] <- 'Clackamas'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Marion')] <-'Rural_Oregon'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Washington')] <- 'Washington'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Lane')] <- 'Lane'
+perc_or_census_cleaned$Area[which(perc_or_census_cleaned$countyname2 == 'Multnomah')] <- 'Multnomah' 
+perc_or_census_cleaned <- perc_or_census_cleaned %>%
+  filter(Area == 'Lane' | Area == 'Multnomah' | Area == 'Clackamas' | Area == 'Rural_Oregon' | Area == 'Central_Oregon' | Area == 'Washington' | Area == 'Jackson')
+
+
+
+perc_or_census_grouped <- perc_or_census_cleaned %>%
+  group_by(Area) %>%
+  summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
+
+```
+
+
 #All States Census
 ```{r}
 states_census <- read.csv('R11689860_SL040.csv')
@@ -321,12 +382,12 @@ states_census_cleaned <- states_census %>%
   dplyr::rename('% At or Above Poverty Level 65+ Determined' = 'PCT_SE_T116_003') 
 ```
 
+
+### Ultimate Datasets
+
 ```{r}
 
+Ultimate_Oregon <- full_join(perc_or_census_cleaned, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
 
-
-ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2009), x = per100_2009)) +
-  geom_point() + 
-  geom_smooth(method = 'lm')
 
 ```
