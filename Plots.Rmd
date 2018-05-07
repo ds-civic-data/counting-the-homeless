@@ -10,6 +10,7 @@ library(tidyverse)
 library(readxl)
 library(stringr)
 library(plyr)
+library(ggthemes)
 ```
 
 
@@ -66,7 +67,9 @@ PIT_CoC_2009 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 9)
 PIT_CoC_2008 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 10)
 PIT_CoC_2007 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 11)
 
-PIT_CoC <- join_all(list(PIT_CoC_2007, PIT_CoC_2008, PIT_CoC_2009, PIT_CoC_2010, PIT_CoC_2011, PIT_CoC_2012, PIT_CoC_2013, PIT_CoC_2014, PIT_CoC_2015, PIT_CoC_2016, PIT_CoC_2017))
+PIT_CoC <- join_all(list(PIT_CoC_2007, PIT_CoC_2008, PIT_CoC_2009, PIT_CoC_2010, PIT_CoC_2011, PIT_CoC_2012, PIT_CoC_2013, PIT_CoC_2014, PIT_CoC_2015, PIT_CoC_2016, PIT_CoC_2017)) %>%
+  mutate(countyname2 = str_remove(`CoC Name`, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES
+```
 
 PIT_CoC <- PIT_CoC %>%
   dplyr::rename('CoC_Name' = 'CoC Name') %>% #dplyr:: neccesary because plyr analog
@@ -92,15 +95,8 @@ PIT_CoC <- PIT_CoC %>%
   dplyr::rename('Total_Homeless_2008' = 'Homeless Individuals, 2008') %>%
   dplyr::rename('Unsheltered_2007' =  'Unsheltered Homeless, 2007' )%>%
   dplyr::rename('Total_Homeless_2007' = 'Homeless Individuals, 2007') %>%
-  mutate(countyname2 = str_remove(CoC_Name, pattern = ' CoC'))  # INCORPORATED REGIONS NOT COUNTIES 
+DECIDEd NOT TO RENAME
 
-
-
-
-
-
-
-```
 
 # County Tidying of Affordable Housing - Oregon Only
 
@@ -340,7 +336,7 @@ perc_or_census_cleaned <- perc_or_census_cleaned %>%
 
 perc_or_census_grouped <- perc_or_census_cleaned %>%
   group_by(Area) %>%
-  summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
+  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
 
 ```
 
@@ -387,7 +383,7 @@ states_census_cleaned <- states_census %>%
 
 ```{r}
 
-Ultimate_Oregon <- full_join(perc_or_census_cleaned, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
+Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
 
 
 ```
