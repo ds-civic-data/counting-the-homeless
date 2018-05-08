@@ -14,6 +14,9 @@ library(ggthemes)
 ```
 
 
+
+
+
 # Data Import
 
 ```{r}
@@ -379,11 +382,24 @@ states_census_cleaned <- states_census %>%
 ```
 
 
+# Grouping the state census data
+```{r}
+states_census_grouped <- states_census_cleaned %>%
+  group_by(Geo_NAME) %>%
+  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
+
+
+```
+
+
 ### Ultimate Datasets
 
 ```{r}
 
 Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
+
+
+Ultimate_States <- inner_join(PIT_Housing_State_Merge, states_census_grouped, by = c('State_Name' = 'Geo_NAME'))
 
 
 ```
