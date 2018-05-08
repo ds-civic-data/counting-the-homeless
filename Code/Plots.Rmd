@@ -395,8 +395,10 @@ states_census_grouped <- states_census_cleaned %>%
 
 ```{r}
 
-Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
+Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area')) 
 
+Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Central_Oregon')] <- 'Central Oregon'
+Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Rural_Oregon')] <- 'Rural Oregon'
 
 Ultimate_States <- inner_join(PIT_Housing_State_Merge, states_census_grouped, by = c('State_Name' = 'Geo_NAME'))
 
