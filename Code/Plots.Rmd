@@ -21,6 +21,8 @@ library(ggthemes)
 
 ```{r}
 
+setwd("~/counting-the-homeless/Data")
+
 Affordable_Housing_10_14 <- read.csv("HAI_map_2010-14.csv")  %>%
   dplyr::rename('% Housing Units per ELI in 2014' = 'per100') %>%
   dplyr::rename('Housing Units 2014' = 'units')
@@ -56,6 +58,7 @@ Affordable_Housing <- full_join(Affordable_Housing_05_09, Affordable_Housing_10_
 
 ```{r}
 
+setwd("~/counting-the-homeless/Data")
 
 
 PIT_CoC_2017 <- read_xlsx("2007-2017-PIT-Counts-by-CoC.XLSX.xlsx", sheet = 1)
@@ -105,6 +108,8 @@ DECIDEd NOT TO RENAME
 
 ```{r}
 
+setwd("~/counting-the-homeless/Data")
+
 Affordable_Housing_Oregon <- Affordable_Housing %>%
   filter(State_Name == 'Oregon') #%>%
   #filter(!is.na(Total)) dont need this anymore becuase filtered in earlier step
@@ -150,6 +155,8 @@ Affordable_Housing_Oregon <- Affordable_Housing_Oregon %>%
 
 ```{r}
 
+setwd("~/counting-the-homeless/Data")
+
 PIT_CoC_Oregon<- PIT_CoC %>%
   filter(countyname2 == 'Eugene/Springfield/Lane County'| countyname2 == 'Portland-Gresham-Multnomah County'| countyname2 == 'Medford/Ashland/Jackson County'| countyname2 == 'Central Oregon'| countyname2 == 'Oregon Balance of State'| countyname2 == 'Hillsboro/Beaverton/Washington County'| countyname2 == 'Clackamas County') 
 
@@ -171,13 +178,7 @@ PIT_Housing_Oregon_Merge <- merge(Affordable_Housing_Oregon, PIT_CoC_Oregon)
 
 ```
 
-```{r}
-ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100_2014, label = Area)) +
-  geom_point()+
-  geom_text()
 
-
-```
 
 
 
@@ -185,10 +186,11 @@ ggplot(PIT_Housing_Oregon_Merge, aes(x = Unsheltered_2017, y = per100_2014, labe
 
 # State Tidying
 ```{r}
- 
+
+
 Affordable_Housing_State <- Affordable_Housing %>%
   group_by(State_Name) %>%
-  dplyr::summarise(units_2014 = mean(units_2014, na.rm = TRUE), per100_2014 = mean(per100_2014, na.rm = TRUE), units_2009 = mean(units_2009, na.rm = TRUE), per100_2009 = mean(per100_2009, na.rm = TRUE))
+  dplyr::summarise(`Housing Units 2014` = mean(`Housing Units 2014`, na.rm = TRUE), `% Housing Units per ELI in 2014` = mean(`% Housing Units per ELI in 2014`, na.rm = TRUE), `Housing Units 2009` = mean(`Housing Units 2009`, na.rm = TRUE), `% Housing Units per ELI in 2009` = mean(`% Housing Units per ELI in 2009`, na.rm = TRUE))
 
 Intermediate_Housing_State_Abrvs <-full_join(Affordable_Housing_State, Helper_State_Abrvs, by = c('State_Name' = 'State'))
 
@@ -208,21 +210,14 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
 
 ```
 
-```{r}
-
-
-
-ggplot(PIT_Housing_State_Merge, aes(y = as.numeric(Change_2009), x = per100_2009)) +
-  geom_point() + 
-  geom_smooth(method = 'lm')
-
-```
 
 
 
 
 #Census Data Pt.1 
 ```{r eval=FALSE}
+setwd("~/counting-the-homeless/Data")
+
 OR_county_census_filtered <- read.csv("R11689837_SL050.csv")
 OR_county_census_filtered %>%
   select(1:4, 56:107) %>%
@@ -255,6 +250,8 @@ OR_county_census_filtered %>%
 
 #OR county Census Data we'll actually probably use
 ```{r}
+setwd("~/counting-the-homeless/Data")
+
 perc_or_census <- read.csv("R11689837_SL050 (1).csv")
 perc_or_census_cleaned <- perc_or_census %>%
   select(1:4, 56:143) %>%
@@ -346,6 +343,8 @@ perc_or_census_grouped <- perc_or_census_cleaned %>%
 
 #All States Census
 ```{r}
+setwd("~/counting-the-homeless/Data")
+
 states_census <- read.csv('R11689860_SL040.csv')
 states_census_cleaned <- states_census %>%
   select(1:4, 56:143) %>%
