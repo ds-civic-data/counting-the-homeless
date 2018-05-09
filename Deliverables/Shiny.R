@@ -4,6 +4,7 @@ library(shiny)
 library(tidyverse)
 library(fivethirtyeight)
 library(ggrepel)
+library(ggthemes)
 
 
   
