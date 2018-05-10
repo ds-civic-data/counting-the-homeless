@@ -166,7 +166,7 @@ PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Portland-Gresham-Multnom
 PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Medford/Ashland/Jackson County')] <- 'Jackson'
 PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Central Oregon')] <- 'Central_Oregon'
 PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Oregon Balance of State')] <- 'Rural_Oregon'
-PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Hillsboro/Beaverton/Washington')] <- 'Washington'
+PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Hillsboro/Beaverton/Washington County')] <- 'Washington'
 PIT_CoC_Oregon$Area[which(PIT_CoC_Oregon$countyname2 =='Clackamas County')] <- 'Clackamas'
 
 
@@ -199,7 +199,7 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
   dplyr::rename('Change_2008' = 'Change in Total Homelessness, 2008-2017') %>%
   dplyr::rename('Change_2009' = 'Change in Total Homelessness, 2009-2017') %>%
   dplyr::rename('Change_2010' = 'Change in Total Homelessness, 2010-2017') %>%
-  dplyr::rename('Change_2011' = 'Change in Total Homelessness, 2011-2017') %>%
+  #dplyr::rename('Change_2011' = 'Change in Total Homelessness, 2011-2017') %>%
   dplyr::rename('Change_2012' = 'Change in Total Homelessness, 2012-2017') %>%
   dplyr::rename('Change_2013' = 'Change in Total Homelessness, 2013-2017') %>%
   dplyr::rename('Change_2014' = 'Change in Total Homelessness, 2014-2017') %>%
@@ -215,7 +215,7 @@ PIT_Housing_State_Merge <- inner_join(Intermediate_Housing_State_Abrvs, PIT_Stat
 
 
 #Census Data Pt.1 
-```{r eval=FALSE}
+#```{r eval=FALSE}
 setwd("~/counting-the-homeless/Data")
 
 OR_county_census_filtered <- read.csv("R11689837_SL050.csv")
@@ -246,15 +246,16 @@ OR_county_census_filtered %>%
   dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
   dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
   dplyr::rename('Occupied Housing Units' = 'SE_T099_001') 
-```
+#```
 
 #OR county Census Data we'll actually probably use
 ```{r}
 setwd("~/counting-the-homeless/Data")
 
-perc_or_census <- read.csv("R11689837_SL050 (1).csv")
+perc_or_census <- read.csv("R11696184_SL050.csv")
+
 perc_or_census_cleaned <- perc_or_census %>%
-  select(1:4, 56:143) %>%
+  #select(1:4, 56:143) %>%
   dplyr::rename('Total Population' = 'SE_T001_001') %>%
   dplyr::rename('Civilian Population 16 to 19 Years' = 'SE_T030_001') %>%
   dplyr::rename('% Not High School Graduate, Not Enrolled (Dropped Out)' = 'PCT_SE_T030_002') %>%
@@ -269,7 +270,7 @@ perc_or_census_cleaned <- perc_or_census %>%
   ###Unemployment data(T37) left out since it is included in T33
    dplyr::rename('Median Household Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T057_001') %>%
    dplyr::rename('Per Capita Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T083_001') %>%
-   dplyr::rename('Gini Index' = 'SE_T157_001') %>%
+   #dplyr::rename('Gini Index' = 'SE_T157_001') %>%
    dplyr::rename('Housing Units' = 'SE_T093_001') %>%
    dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
   ###unsure if rest of T99(housing fuel stuff) is useful 
@@ -336,7 +337,7 @@ perc_or_census_cleaned <- perc_or_census_cleaned %>%
 
 perc_or_census_grouped <- perc_or_census_cleaned %>%
   group_by(Area) %>%
-  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
+  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
 
 ```
 
@@ -345,9 +346,9 @@ perc_or_census_grouped <- perc_or_census_cleaned %>%
 ```{r}
 setwd("~/counting-the-homeless/Data")
 
-states_census <- read.csv('R11689860_SL040.csv')
+states_census <- read.csv('R11696182_SL040.csv')
 states_census_cleaned <- states_census %>%
-  select(1:4, 56:143) %>%
+  #select(1:4, 56:143) %>%
   dplyr::rename('Total Population' = 'SE_T001_001') %>%
   dplyr::rename('Civilian Population 16 to 19 Years' = 'SE_T030_001') %>%
   dplyr::rename('% Not High School Graduate, Not Enrolled (Dropped Out)' = 'PCT_SE_T030_002') %>%
@@ -362,7 +363,7 @@ states_census_cleaned <- states_census %>%
   ###Unemployment data(T37) left out since it is included in T33
    dplyr::rename('Median Household Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T057_001') %>%
    dplyr::rename('Per Capita Income (In 2016 Inflation Adjusted Dollars)' = 'SE_T083_001') %>%
-   dplyr::rename('Gini Index' = 'SE_T157_001') %>%
+   #dplyr::rename('Gini Index' = 'SE_T157_001') %>%
    dplyr::rename('Housing Units' = 'SE_T093_001') %>%
    dplyr::rename('Occupied Housing Units' = 'SE_T099_001') %>%
   ###unsure if rest of T99(housing fuel stuff) is useful 
@@ -385,9 +386,9 @@ states_census_cleaned <- states_census %>%
 ```{r}
 states_census_grouped <- states_census_cleaned %>%
   group_by(Geo_NAME) %>%
-  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Gini Index` = mean(`Gini Index`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
+  dplyr::summarise(`% Unemployed` = mean(`% Unemployed`), `Housing Units` = sum(`Housing Units`), `Median Gross Rent` = mean(`Median Gross Rent`), `Highschool Dropout Rate` = mean(`% Not High School Graduate, Not Enrolled (Dropped Out)`), `Total Population` = sum(`Total Population`), `% In Poverty` = sum(`% Living in Poverty of 18-64 Determined`) + sum(`% Living in Poverty 65+ Determined`))
 
-
+#, `Gini Index` = mean(`Gini Index`)
 ```
 
 
@@ -395,15 +396,7 @@ states_census_grouped <- states_census_cleaned %>%
 
 ```{r}
 
-Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area')) %>%
-  mutate(total_2017 = (as.numeric(`Total Homeless, 2017`) - as.numeric(`Total Homeless, 2016`))/as.numeric(`Total Homeless, 2016`), total_2016 = (as.numeric(`Total Homeless, 2016`) - `Total Homeless, 2015`)/as.numeric(`Total Homeless, 2015`), total_2015 = (`Total Homeless, 2015` - `Total Homeless, 2014`)/as.numeric(`Total Homeless, 2014`), total_2014 = (`Total Homeless, 2014` - `Total Homeless, 2013`)/as.numeric(`Total Homeless, 2013`), 
-                               total_2013 = (`Total Homeless, 2013` - as.numeric(`Total Homeless, 2012`))/as.numeric(`Total Homeless, 2012`),total_2012 = (as.numeric(`Total Homeless, 2012`) - as.numeric(`Total Homeless, 2011`))/as.numeric(`Total Homeless, 2011`),total_2011 = (as.numeric(`Total Homeless, 2011`) - `Total Homeless, 2010`)/as.numeric(`Total Homeless, 2010`), total_2010 = (`Total Homeless, 2010` - `Total Homeless, 2009`)/as.numeric(`Total Homeless, 2009`),
-                               total_2009 = (`Total Homeless, 2009` - `Total Homeless, 2008`)/as.numeric(`Total Homeless, 2008`), total_2008 = (`Total Homeless, 2008` - as.numeric(`Total Homeless, 2007`))/as.numeric(`Total Homeless, 2007`)) %>%
-  group_by(Area) %>%
-  mutate(Total = sum((total_2017), (total_2016) , (total_2015) , (total_2014) , (total_2013) , (total_2012) , (total_2011))/7)
-
-Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Central_Oregon')] <- 'Central Oregon'
-Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Rural_Oregon')] <- 'Rural Oregon'
+Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area'))
 
 
 
@@ -414,4 +407,58 @@ Ultimate_States <- inner_join(PIT_Housing_State_Merge, states_census_grouped, by
 
 
 
+```
+
+
+# Ultimate Oregon Editing
+
+```{r}
+
+
+
+Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Central_Oregon')] <- 'Central Oregon'
+Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Rural_Oregon')] <- 'Rural Oregon'
+
+
+Ultimate_Oregon <- Ultimate_Oregon %>%
+  mutate(total_2017 = (as.numeric(`Total Homeless, 2017`) - as.numeric(`Total Homeless, 2016`))/as.numeric(`Total Homeless, 2016`), total_2016 = (as.numeric(`Total Homeless, 2016`) - `Total Homeless, 2015`)/as.numeric(`Total Homeless, 2015`), total_2015 = (`Total Homeless, 2015` - `Total Homeless, 2014`)/as.numeric(`Total Homeless, 2014`), total_2014 = (`Total Homeless, 2014` - `Total Homeless, 2013`)/as.numeric(`Total Homeless, 2013`), 
+                               total_2013 = (`Total Homeless, 2013` - as.numeric(`Total Homeless, 2012`))/as.numeric(`Total Homeless, 2012`),total_2012 = (as.numeric(`Total Homeless, 2012`) - as.numeric(`Total Homeless, 2011`))/as.numeric(`Total Homeless, 2011`),total_2011 = (as.numeric(`Total Homeless, 2011`) - `Total Homeless, 2010`)/as.numeric(`Total Homeless, 2010`), total_2010 = (`Total Homeless, 2010` - `Total Homeless, 2009`)/as.numeric(`Total Homeless, 2009`),
+                               total_2009 = (`Total Homeless, 2009` - `Total Homeless, 2008`)/as.numeric(`Total Homeless, 2008`), total_2008 = (`Total Homeless, 2008` - as.numeric(`Total Homeless, 2007`))/as.numeric(`Total Homeless, 2007`)) %>%
+    dplyr::mutate(total_2011_2017 = (as.numeric(`Total Homeless, 2017`) - as.numeric(`Total Homeless, 2011`))/as.numeric(`Total Homeless, 2011`)) %>%
+  dplyr::group_by(Area) %>%
+  dplyr::mutate(Total = sum((total_2017), (total_2016) , (total_2015) , (total_2014) , (total_2013) , (total_2012) , (total_2011))/7)
+
+
+
+Ultimate_Oregon <- Ultimate_Oregon %>%
+    mutate(chronic_2017 = (as.numeric(`Chronically Homeless Individuals, 2017`) - as.numeric(`Chronically Homeless Individuals, 2016`))/as.numeric(`Chronically Homeless Individuals, 2016`), chronic_2016 = (as.numeric(`Chronically Homeless Individuals, 2016`) - `Chronically Homeless Individuals, 2015`)/as.numeric(`Chronically Homeless Individuals, 2015`), chronic_2015 = (`Chronically Homeless Individuals, 2015` - `Chronically Homeless Individuals, 2014`)/as.numeric(`Chronically Homeless Individuals, 2014`), chronic_2014 = (`Chronically Homeless Individuals, 2014` - `Chronically Homeless Individuals, 2013`)/as.numeric(`Chronically Homeless Individuals, 2013`), 
+                               chronic_2013 = (`Chronically Homeless Individuals, 2013` - as.numeric(`Chronically Homeless Individuals, 2012`))/as.numeric(`Chronically Homeless Individuals, 2012`),chronic_2012 = (as.numeric(`Chronically Homeless Individuals, 2012`) - as.numeric(`Chronically Homeless Individuals, 2011`))/as.numeric(`Chronically Homeless Individuals, 2011`),chronic_2011 = (as.numeric(`Chronically Homeless Individuals, 2011`) - `Chronically Homeless Individuals, 2010`)/as.numeric(`Chronically Homeless Individuals, 2010`), chronic_2010 = (`Chronically Homeless Individuals, 2010` - `Chronically Homeless Individuals, 2009`)/as.numeric(`Chronically Homeless Individuals, 2009`),
+                               chronic_2009 = (`Chronically Homeless Individuals, 2009` - `Chronically Homeless Individuals, 2008`)/as.numeric(`Chronically Homeless Individuals, 2008`), chronic_2008 = (`Chronically Homeless Individuals, 2008` - as.numeric(`Chronically Homeless Individuals, 2007`))/as.numeric(`Chronically Homeless Individuals, 2007`)) %>%
+  dplyr::mutate(chronic_2011_2017 = (as.numeric(`Chronically Homeless Individuals, 2017`) - as.numeric(`Chronically Homeless Individuals, 2011`))/as.numeric(`Chronically Homeless Individuals, 2011`)) %>%
+  dplyr::group_by(Area) %>%
+  dplyr::mutate(Chronic = sum((chronic_2017), (chronic_2016) , (chronic_2015) , (chronic_2014) , (chronic_2013) , (chronic_2012) , (chronic_2011))/7)
+
+
+Ultimate_Oregon <- Ultimate_Oregon %>%
+    mutate(families_2017 = (as.numeric(`Homeless People in Families, 2017`) - as.numeric(`Homeless People in Families, 2016`))/as.numeric(`Homeless People in Families, 2016`), families_2016 = (as.numeric(`Homeless People in Families, 2016`) - `Homeless People in Families, 2015`)/as.numeric(`Homeless People in Families, 2015`), families_2015 = (`Homeless People in Families, 2015` - `Homeless People in Families, 2014`)/as.numeric(`Homeless People in Families, 2014`), families_2014 = (`Homeless People in Families, 2014` - `Homeless People in Families, 2013`)/as.numeric(`Homeless People in Families, 2013`), 
+                               families_2013 = (`Homeless People in Families, 2013` - as.numeric(`Homeless People in Families, 2012`))/as.numeric(`Homeless People in Families, 2012`),families_2012 = (as.numeric(`Homeless People in Families, 2012`) - as.numeric(`Homeless People in Families, 2011`))/as.numeric(`Homeless People in Families, 2011`),families_2011 = (as.numeric(`Homeless People in Families, 2011`) - `Homeless People in Families, 2010`)/as.numeric(`Homeless People in Families, 2010`), families_2010 = (`Homeless People in Families, 2010` - `Homeless People in Families, 2009`)/as.numeric(`Homeless People in Families, 2009`),
+                               families_2009 = (`Homeless People in Families, 2009` - `Homeless People in Families, 2008`)/as.numeric(`Homeless People in Families, 2008`), families_2008 = (`Homeless People in Families, 2008` - as.numeric(`Homeless People in Families, 2007`))/as.numeric(`Homeless People in Families, 2007`)) %>%
+  dplyr::mutate(families_20011_2017 = (as.numeric(`Homeless People in Families, 2017`) - as.numeric(`Homeless People in Families, 2011`))/as.numeric(`Homeless People in Families, 2011`)) %>%
+  dplyr::group_by(Area) %>%
+  dplyr::mutate(Families = sum((families_2017), (families_2016) , (families_2015) , (families_2014) , (families_2013) , (families_2012) , (families_2011))/7)
+
+
+
+
+```
+
+
+```{r}
+
+options(digits = 2)
+Ultimate_States$`Change in Total Homelessness, 2011-2017` <- as.numeric(Ultimate_States$`Change in Total Homelessness, 2011-2017`)
+  
+  
+  #lapply(Ultimate_States$`Change in Total Homelessness, 2011-2017`, numeric)
+  
 ```
