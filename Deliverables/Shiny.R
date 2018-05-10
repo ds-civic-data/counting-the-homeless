@@ -55,6 +55,16 @@ ui <- fluidPage(
 ##Server is where all of the computations happen
 server <- function(input, output) {
   
+  Inputdata <- reactive ({
+    
+    new.df <- Ultimate_States %>%
+      dplyr::filter(State_Name %in% c('Oregon', input$states)) 
+    return(new.df)
+    
+  })
+  
+  
+  
   output$oregon_areas <- renderPlot({
     Ultimate_Oregon %>% ggplot(aes_string(x=input$x_variable_CoC, y=input$year_change_oregon, label = 'Area')) + 
       geom_point() +
@@ -65,15 +75,18 @@ server <- function(input, output) {
   })
   
   output$usa_states <- renderPlot({
-    Ultimate_States %>% ggplot(aes_string(x=input$x_variable_states, y=input$year_change, label = 'State_Name')) + 
+    data_states <- Inputdata() 
+    options = list(scrollX = TRUE)
+    data_states%>% ggplot(aes_string(x=input$x_variable_states, y=input$year_change, label = 'State_Name')) + 
       geom_point() +
       geom_text_repel() +
       geom_smooth(method = input$model, se = input$se, color = 'black') +
       theme_tufte() +
       ylab('Change in Homelessness for Given Year')
-      #  %>% filter(State_Name == input$states) - WANT TO ADD THIS IN SOMEHOW
+      #   - WANT TO ADD THIS IN SOMEHOW
   })
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
