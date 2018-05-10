@@ -395,12 +395,23 @@ states_census_grouped <- states_census_cleaned %>%
 
 ```{r}
 
-Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area')) 
+Ultimate_Oregon <- inner_join(perc_or_census_grouped, PIT_Housing_Oregon_Merge, by = c('Area' = 'Area')) %>%
+  mutate(total_2017 = (as.numeric(`Total Homeless, 2017`) - as.numeric(`Total Homeless, 2016`))/as.numeric(`Total Homeless, 2016`), total_2016 = (as.numeric(`Total Homeless, 2016`) - `Total Homeless, 2015`)/as.numeric(`Total Homeless, 2015`), total_2015 = (`Total Homeless, 2015` - `Total Homeless, 2014`)/as.numeric(`Total Homeless, 2014`), total_2014 = (`Total Homeless, 2014` - `Total Homeless, 2013`)/as.numeric(`Total Homeless, 2013`), 
+                               total_2013 = (`Total Homeless, 2013` - as.numeric(`Total Homeless, 2012`))/as.numeric(`Total Homeless, 2012`),total_2012 = (as.numeric(`Total Homeless, 2012`) - as.numeric(`Total Homeless, 2011`))/as.numeric(`Total Homeless, 2011`),total_2011 = (as.numeric(`Total Homeless, 2011`) - `Total Homeless, 2010`)/as.numeric(`Total Homeless, 2010`), total_2010 = (`Total Homeless, 2010` - `Total Homeless, 2009`)/as.numeric(`Total Homeless, 2009`),
+                               total_2009 = (`Total Homeless, 2009` - `Total Homeless, 2008`)/as.numeric(`Total Homeless, 2008`), total_2008 = (`Total Homeless, 2008` - as.numeric(`Total Homeless, 2007`))/as.numeric(`Total Homeless, 2007`)) %>%
+  group_by(Area) %>%
+  mutate(Total = sum((total_2017), (total_2016) , (total_2015) , (total_2014) , (total_2013) , (total_2012) , (total_2011))/7)
 
 Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Central_Oregon')] <- 'Central Oregon'
 Ultimate_Oregon$Area[which(Ultimate_Oregon$Area == 'Rural_Oregon')] <- 'Rural Oregon'
 
-Ultimate_States <- inner_join(PIT_Housing_State_Merge, states_census_grouped, by = c('State_Name' = 'Geo_NAME'))
+
+
+
+Ultimate_States <- inner_join(PIT_Housing_State_Merge, states_census_grouped, by = c('State_Name' = 'Geo_NAME')) 
+
+
+
 
 
 ```
