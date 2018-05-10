@@ -10,7 +10,7 @@ library(ggthemes)
   
 
 ##load data in plots.rmd
-select_oregon_year_change <- c('Total' = 'sum((total_2017), (total_2016) , (total_2015) , (total_2014) , (total_2013) , (total_2012) , (total_2011))/7') 
+select_oregon_year_change <- c('Total') 
   #c('2017' = "`Total Homeless, 2017`", '2016' = "`Total Homeless, 2016`", '2015' = "`Total Homeless, 2015`", '2014' = "`Total Homeless, 2014`", '2013' = "`Total Homeless, 2013`",'2012' = "`Total Homeless, 2012`",'2011' = "`Total Homeless, 2011`", '2010' = "`Total Homeless, 2010`",'2009' = "`Total Homeless, 2009`", '2008' = "`Total Homeless, 2008`", '2007' = "`Total Homeless, 2007`")
 #select_oregon_year_change <- c('2017' = "(as.numeric(`Total Homeless, 2017`) - as.numeric(`Total Homeless, 2016`))/as.numeric(`Total Homeless, 2016`)", '2016' = "(as.numeric(`Total Homeless, 2016`) - `Total Homeless, 2015`)/as.numeric(`Total Homeless, 2015`)", '2015' = "(`Total Homeless, 2015` - `Total Homeless, 2014`)/as.numeric(`Total Homeless, 2014`)", '2014' = "(`Total Homeless, 2014` - `Total Homeless, 2013`)/as.numeric(`Total Homeless, 2013`)", 
  #                              '2013' = "(`Total Homeless, 2013` - as.numeric(`Total Homeless, 2012`))/as.numeric(`Total Homeless, 2012`)",'2012' = "(as.numeric(`Total Homeless, 2012`) - as.numeric(`Total Homeless, 2011`))/as.numeric(`Total Homeless, 2011`)",'2011' = "(as.numeric(`Total Homeless, 2011`) - `Total Homeless, 2010`)/as.numeric(`Total Homeless, 2010`)", '2010' = "(`Total Homeless, 2010` - `Total Homeless, 2009`)/as.numeric(`Total Homeless, 2009`)",
