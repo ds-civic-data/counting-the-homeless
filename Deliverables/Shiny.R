@@ -35,14 +35,14 @@ ui <- fluidPage(
       selectInput('year_change_oregon', 'Select Homelessness Category Coc Regions',choices = select_oregon_year_change),
       selectInput('x_variable_CoC','Select X1 Variable for Oregon CoC Regions', choices = select_x_variables),
       
-      
+      selectInput('additional_variables', 'Select Added Variables', choices = select_x_variables, multiple = TRUE),
       #selectInput('year_change', 'Select Year for US States', choices = select_year_change),
       selectInput('x_variable_states','Select X2 Variable for US States', choices = select_x_variables),
-      
+
       selectInput('states', 'Select Additional States', choices = select_states, multiple = TRUE),
       selectInput('model', 'Fit Line', choices = select_regression)
       #selectInput('se', 'S.E.', choices = select_error)
-      
+
     ),
     
     # Show a plot of the generated distribution
@@ -65,9 +65,27 @@ server <- function(input, output) {
   })
   
   
+  lm_oregon_x <- reactive ({
+    
+    lm_oregon_x <- lm(formula = input$x_variable_CoC ~ 'Total Population' * input$additional_variables, data = Ultimate_Oregon)
+    return(lm_oregon_x)
+    
+  })
+  
+  
+  lm_oregon_y <- reactive ({
+    
+    lm_oregon_y <- lm(formula = input$year_change_oregon ~ 'Total Population' * input$additional_variables, data = Ultimate_Oregon)
+    return(lm_oregon_y)
+  })
+
   
   output$oregon_areas <- renderPlot({
-    Ultimate_Oregon %>% ggplot(aes_string(x=input$x_variable_CoC, y=input$year_change_oregon, label = 'Area')) + 
+      lm_x <- lm_oregon_x()
+      lm_y <- lm_oregon_y()
+      Ultimate_Oregon$resid_y <- lm_y$resid
+      Ultimate_Oregon$resid_x <- lm_x$resid
+      Ultimate_Oregon %>% ggplot(aes_string(x= 'resid_x', y='resid_y', label = 'Area')) + 
       geom_point() +
       geom_text_repel() +
       geom_smooth(method = input$model, se = FALSE, color = 'black') +
@@ -78,10 +96,31 @@ server <- function(input, output) {
       ggtitle('Oregon CoC Regions')
   })
   
+  
+  lm_state_x <- reactive ({
+    
+    lm_state_x <- lm(formula = input$x_variable_CoC ~ 'Total Population' * input$additional_variables, data = Ultimate_Oregon)
+    return(lm_state_x)
+    
+  })
+  
+  
+  lm_state_y <- reactive ({
+    
+    lm_state_y <- lm(formula =  '`Change in Total Homelessness, 2011-2017`' ~ 'Total Population' * input$additional_variables, data = Ultimate_Oregon)
+    return(lm_state_y)
+  })
+  
+  
+  
   output$usa_states <- renderPlot({
-    data_states <- Inputdata() 
+    data_states <- Inputdata()
+    lm_x <- lm_state_x()
+    lm_y <- lm_state_y()
+    data_states$resid_y <- lm_y$resid
+    data_states$resid_x <- lm_x$resid
     options = list(scrollX = TRUE)
-    data_states%>% ggplot(aes_string(x=input$x_variable_states, y='`Change in Total Homelessness, 2011-2017`', label = 'State_Name')) + 
+    data_states%>% ggplot(aes_string(x=resid_x, y=resid_y, label = 'State_Name')) + 
       geom_point() +
       geom_text_repel() +
       geom_smooth(method = input$model, se = FALSE, color = 'black') +
@@ -93,6 +132,6 @@ server <- function(input, output) {
   })
 }
 
-
+#'`Change in Total Homelessness, 2011-2017`'
 # Run the application 
 shinyApp(ui = ui, server = server)
