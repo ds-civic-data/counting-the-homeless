@@ -26,13 +26,13 @@ select_error <- c(FALSE, TRUE)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Change in Homeless Populations"),
+  titlePanel("Trends in Homelessness"),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      # selectInput('year_total', 'Select Year for Oregon Coc Regions', choices = select_year_total),         
-      selectInput('year_change_oregon', 'Select Year for Oregon CoC Regions',choices = select_oregon_year_change),
+      # selectInput('year_total', 'Select Homelessness Category Coc Regions', choices = select_year_total),         
+      selectInput('year_change_oregon', 'Select Homelessness Category Coc Regions',choices = select_oregon_year_change),
       selectInput('x_variable_CoC','Select X1 Variable for Oregon CoC Regions', choices = select_x_variables),
       
       
@@ -74,7 +74,8 @@ server <- function(input, output) {
       theme_tufte() +
       ylab('Change in Homelessness, 2011-2017')+
       xlab('X1, 2007-2011')+
-      ylim(-1, 1)
+      ylim(-1, 1)+
+      ggtitle('Oregon CoC Regions')
   })
   
   output$usa_states <- renderPlot({
@@ -86,7 +87,8 @@ server <- function(input, output) {
       geom_smooth(method = input$model, se = FALSE, color = 'black') +
       theme_tufte() +
       ylim(-1, 1) +
-      xlab('X2, 2007-2011')
+      xlab('X2, 2007-2011')+
+      ggtitle('US States')
    
   })
 }
