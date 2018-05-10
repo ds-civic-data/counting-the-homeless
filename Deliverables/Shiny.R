@@ -16,7 +16,7 @@ select_oregon_year_change <- c('2017' = "(as.numeric(`Total Homeless, 2017`) - a
                                '2009' = "(`Total Homeless, 2009` - `Total Homeless, 2008`)/as.numeric(`Total Homeless, 2008`)", '2008' = "(`Total Homeless, 2008` - as.numeric(`Total Homeless, 2007`))/as.numeric(`Total Homeless, 2007`)")
 
 select_year_change <- c('2016' = 'as.numeric(Change_2016)', '2015' = 'as.numeric(Change_2015)', '2014' = 'as.numeric(Change_2014)', '2013' = 'as.numeric(Change_2013)', '2012' = 'as.numeric(Change_2012)', '2011' =  'as.numeric(Change_2011)', '2010' = 'as.numeric(Change_2010)', '2009' =  'as.numeric(Change_2009)', '2008' = 'as.numeric(Change_2008)', '2007' = 'as.numeric(Change_2007)')
-select_states <- c('`Missouri`', '`Oregon`', '`California`', '`Washington`', '`Kentucky`', '`New York`', '`Florida`', '`Alaska`')
+select_states <- c('Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Deleware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana','Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia')
 select_x_variables <- c('`% Unemployed`', '`Gini Index`', '`Median Gross Rent`', '`Highschool Dropout Rate`', '`Total Population`', '`% In Poverty`', '`Housing Units`')
 select_regression <- c('FALSE', 'loess', 'lm')
 select_error <- c(FALSE, TRUE)
@@ -39,8 +39,8 @@ ui <- fluidPage(
       selectInput('x_variable_states','Select X Variable for US States', choices = select_x_variables),
       
       selectInput('states', 'Select State(s)', choices = select_states, multiple = TRUE),
-      selectInput('model', 'Fit Line', choices = select_regression),
-      selectInput('se', 'S.E.', choices = select_error)
+      selectInput('model', 'Fit Line', choices = select_regression)
+      #selectInput('se', 'S.E.', choices = select_error)
       
     ),
     
@@ -69,7 +69,7 @@ server <- function(input, output) {
     Ultimate_Oregon %>% ggplot(aes_string(x=input$x_variable_CoC, y=input$year_change_oregon, label = 'Area')) + 
       geom_point() +
       geom_text_repel() +
-      geom_smooth(method = input$model, se = input$se, color = 'black') +
+      geom_smooth(method = input$model, se = FALSE, color = 'black') +
       theme_tufte() +
       ylab('Change in Homelessness for Given Year')
   })
@@ -80,7 +80,7 @@ server <- function(input, output) {
     data_states%>% ggplot(aes_string(x=input$x_variable_states, y=input$year_change, label = 'State_Name')) + 
       geom_point() +
       geom_text_repel() +
-      geom_smooth(method = input$model, se = input$se, color = 'black') +
+      geom_smooth(method = input$model, se = FALSE, color = 'black') +
       theme_tufte() +
       ylab('Change in Homelessness for Given Year')
       #   - WANT TO ADD THIS IN SOMEHOW
