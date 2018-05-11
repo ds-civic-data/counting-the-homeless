@@ -89,7 +89,6 @@ server <- function(input, output) {
       geom_point() +
       geom_text_repel() +
       geom_smooth(method = input$model, se = FALSE, color = 'black') +
-      theme_tufte() +
       ylab('Change in Homelessness, 2011-2017')+
       xlab('X1, 2007-2011')+
       ylim(-1, 1)+
@@ -124,7 +123,6 @@ server <- function(input, output) {
       geom_point() +
       geom_text_repel() +
       geom_smooth(method = input$model, se = FALSE, color = 'black') +
-      theme_tufte() +
       ylim(-1, 1) +
       xlab('X2, 2007-2011')+
       ggtitle('US States')
